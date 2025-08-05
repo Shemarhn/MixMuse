@@ -48,6 +48,12 @@ if __name__ == "__main__":
         print(f"{track['artist']} - {track['name']} from {track['album']} ({track['played_at']})")
 
 
+
+
+
+        
+
+
     
 
 
