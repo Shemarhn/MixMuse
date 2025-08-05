@@ -33,7 +33,7 @@ if __name__ == "__main__":
     track = search_track("Blinding Lights", "The Weeknd")
     if track:
         print(f"Found track: {track['name']} by {track['artists'][0]['name']}")
-        features = audio_features(track['id'])
-        print("Audio Features:", features)
+      #  features = audio_features(track['id'])
+      #  print("Audio Features:", features)
     else:
         print("Track not found.")
