@@ -10,3 +10,4 @@ requests==2.32.4
 six==1.17.0
 spotipy==2.25.1
 urllib3==2.5.0
+ytmusicapi==1.11.0

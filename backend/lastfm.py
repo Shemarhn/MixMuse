@@ -42,11 +42,43 @@ def recenttracks(limit=100): #This gets the last 100 tracks played by the user
 
     return cleaned
 
+def get_similar_tracks(artist, track_name, limit=10):
+    url= "http://ws.audioscrobbler.com/2.0/"
+    params = {
+        "method": "track.getsimilar",
+        "artist": artist,
+        "track": track_name,
+        "api_key": API_KEY,
+        "format": "json",
+        "limit": limit
+    }
+    response = requests.get(url, params=params)
+    data = response.json()
+    if 'similartracks' not in data or 'track' not in data['similartracks']:
+        return []  # Return an empty list if no similar tracks are found
+    similar_tracks= data['similartracks']['track']
+    cleaned = []
+
+    for track in similar_tracks:
+        cleaned.append({
+            "artist": track['artist']['name'],
+            "name": track['name']
+        })
+    return cleaned
+
+
 if __name__ == "__main__":
     tracks = recenttracks()
-    for track in tracks:
-        print(f"{track['artist']} - {track['name']} from {track['album']} ({track['played_at']})")
+   # for track in tracks:
+   #     print(f"{track['artist']} - {track['name']} from {track['album']} ({track['played_at']})")
 
+    # Example usage of get_similar_tracks
+    first_track = tracks[0] if tracks else None
+    if first_track:
+        similar_tracks = get_similar_tracks(first_track['artist'], first_track['name'])
+        print(f"\nSimilar tracks to {first_track['name']} by {first_track['artist']}:")
+        for similar in similar_tracks:
+            print(f"{similar['artist']} - {similar['name']}")
 
 
 
