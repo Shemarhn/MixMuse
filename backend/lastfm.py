@@ -7,7 +7,7 @@ load_dotenv()  # Load environment variables from .env file
 API_KEY = os.getenv('LASTFM_API_KEY')
 USERNAME = os.getenv('LASTFM_USERNAME') 
 
-def recenttracks(limit=100): #This gets the last 100 tracks played by the user
+def recenttracks(limit=50): #This gets the last 100 tracks played by the user
     if not API_KEY or not USERNAME:
         raise ValueError("API_KEY and USERNAME must be set in environment variables") #Raises an error if the API key or username is not set
     
@@ -62,28 +62,44 @@ def get_similar_tracks(artist, track_name, limit=10):
     for track in similar_tracks:
         cleaned.append({
             "artist": track['artist']['name'],
-            "name": track['name']
+            "name": track['name'],
+            "match": float(track.get('match', 0))  # Similarity score
         })
+        
     return cleaned
+
+def recommendation_pool(recent_tracks, similarity_threshold=0.3):
+    all_similar = []
+    seen = set()
+
+    for track in recent_tracks:
+        artist = track['artist']
+        name = track['name']
+        similars = get_similar_tracks(artist, name)
+
+        for sim in similars:
+            if sim['match'] < similarity_threshold:
+                continue  # skip low-ranked ones
+
+            key = (sim['artist'].lower(), sim['name'].lower())
+            if key in seen:
+                continue  # skip duplicates
+
+            seen.add(key)
+            all_similar.append(sim)
+
+    return all_similar
 
 
 if __name__ == "__main__":
-    tracks = recenttracks()
-   # for track in tracks:
-   #     print(f"{track['artist']} - {track['name']} from {track['album']} ({track['played_at']})")
-
-    # Example usage of get_similar_tracks
-    first_track = tracks[0] if tracks else None
-    if first_track:
-        similar_tracks = get_similar_tracks(first_track['artist'], first_track['name'])
-        print(f"\nSimilar tracks to {first_track['name']} by {first_track['artist']}:")
-        for similar in similar_tracks:
-            print(f"{similar['artist']} - {similar['name']}")
+    recent = recenttracks()
+    recommendations = recommendation_pool(recent)
+    print(f"{len(recommendations)} High Quality Recommendations Were Generated:")
+    for rec in recommendations:
+        print(f"{rec['artist']} - {rec['name']} (Match: {rec['match']})")
 
 
 
-
-        
 
 
     
