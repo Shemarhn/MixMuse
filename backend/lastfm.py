@@ -1,6 +1,8 @@
 import requests
 import os
 from dotenv import load_dotenv
+from concurrent.futures import ThreadPoolExecutor
+from operator import itemgetter
 
 load_dotenv()  # Load environment variables from .env file
 
@@ -68,25 +70,35 @@ def get_similar_tracks(artist, track_name, limit=10):
         
     return cleaned
 
-def recommendation_pool(recent_tracks, similarity_threshold=0.3):
+def recommendation_pool(recent_tracks, similarity_threshold=0.3, max_workers=10):
     all_similar = []
     seen = set()
 
-    for track in recent_tracks:
-        artist = track['artist']
-        name = track['name']
-        similars = get_similar_tracks(artist, name)
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        # Create a future for each API call
+        futures = [
+            executor.submit(get_similar_tracks, track['artist'], track['name'])
+            for track in recent_tracks
+        ]
 
-        for sim in similars:
-            if sim['match'] < similarity_threshold:
-                continue  # skip low-ranked ones
+        for future in futures:
+            try:
+                similars = future.result()
+                for sim in similars:
+                    if sim['match'] < similarity_threshold:
+                        continue
 
-            key = (sim['artist'].lower(), sim['name'].lower())
-            if key in seen:
-                continue  # skip duplicates
+                    key = (sim['artist'].lower(), sim['name'].lower())
+                    if key in seen:
+                        continue
 
-            seen.add(key)
-            all_similar.append(sim)
+                    seen.add(key)
+                    all_similar.append(sim)
+            except Exception as e:
+                print(f"An error occurred: {e}")
+
+    # Sort by match score in descending order
+    all_similar.sort(key=itemgetter('match'), reverse=True)
 
     return all_similar
 
@@ -95,7 +107,9 @@ if __name__ == "__main__":
     recent = recenttracks()
     recommendations = recommendation_pool(recent)
     print(f"{len(recommendations)} High Quality Recommendations Were Generated:")
-    for rec in recommendations:
+    # Sort recommendations by match score before printing
+    sorted_recommendations = sorted(recommendations, key=itemgetter('match'), reverse=True)
+    for rec in sorted_recommendations:
         print(f"{rec['artist']} - {rec['name']} (Match: {rec['match']})")
 
 
