@@ -46,7 +46,7 @@ An AI-powered playlist generator that creates seamless, mood-matching transition
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/mixmuse.git
+   git clone https://github.com/Shemarhn/MixMuse.git
    cd mixmuse
    ```
 
@@ -228,14 +228,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Apple Music API** - For iOS ecosystem integration
 - **Framer Motion** - For smooth animations
 - **Styled Components** - For component styling
-
-## 📞 Support
-
-- **Documentation** - [Wiki](https://github.com/yourusername/mixmuse/wiki)
-- **Issues** - [GitHub Issues](https://github.com/yourusername/mixmuse/issues)
-- **Discussions** - [GitHub Discussions](https://github.com/yourusername/mixmuse/discussions)
-- **Email** - support@mixmuse.app
-
----
 
 **Made with ❤️ for music lovers everywhere**
