@@ -1,16 +1,16 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from './contexts/AuthContext';
-import Layout from './components/Layout';
-import Home from './pages/Home';
-import Dashboard from './pages/Dashboard';
-import Playlists from './pages/Playlists';
-import Recommendations from './pages/Recommendations';
-import Analytics from './pages/Analytics';
-import Settings from './pages/Settings';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import LoadingSpinner from './components/LoadingSpinner';
+import { useAuth } from './contexts/AuthContext.jsx';
+import Layout from './components/Layout.jsx';
+import Home from './pages/Home.jsx';
+import Dashboard from './pages/Dashboard.jsx';
+import Playlists from './pages/Playlists.jsx';
+import Recommendations from './pages/Recommendations.jsx';
+import Analytics from './pages/Analytics.jsx';
+import Settings from './pages/Settings.jsx';
+import Login from './pages/Login.jsx';
+import Register from './pages/Register.jsx';
+import LoadingSpinner from './components/LoadingSpinner.jsx';
 
 function App() {
   const { user, loading } = useAuth();
@@ -51,3 +51,5 @@ function App() {
 }
 
 export default App;
+
+

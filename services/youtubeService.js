@@ -1,17 +1,15 @@
 const axios = require('axios');
-const ytmusic = require('ytmusicapi');
 
 class YouTubeService {
   constructor(accessToken) {
     this.accessToken = accessToken;
     this.baseURL = 'https://www.googleapis.com/youtube/v3';
-    this.ytmusic = new ytmusic.YTMusic();
   }
 
-  async makeRequest(endpoint, params = {}) {
+  async makeRequest(endpoint, params = {}, options = {}) {
     try {
       const config = {
-        method: 'GET',
+        method: options.method || 'GET',
         url: `${this.baseURL}${endpoint}`,
         headers: {
           'Authorization': `Bearer ${this.accessToken}`,
@@ -20,7 +18,8 @@ class YouTubeService {
         params: {
           ...params,
           key: process.env.YOUTUBE_API_KEY
-        }
+        },
+        data: options.data
       };
 
       const response = await axios(config);
